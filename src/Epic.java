@@ -1,58 +1,33 @@
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    private final HashMap<Integer, SubTask> subTasks;
+    private final ArrayList<Integer> subTasks;
 
-    protected Epic(int id, String name, String description) {
-        super(id, name, description);
-        this.subTasks = new HashMap<>();
-        this.setStatus(TaskStatus.NEW);
+    public Epic(String name, String description) {
+        super(name, description, TaskStatus.NEW);
+        this.subTasks = new ArrayList<>();
     }
 
-    protected void addSubTask(int id, SubTask subTask) {
-        subTasks.put(id, subTask);
-        updateStatus();
+    public Epic(int id, String name, String description) {
+        super(id, name, description, TaskStatus.NEW);
+        this.subTasks = new ArrayList<>();
+    }
+
+    protected ArrayList<Integer> getSubTasks() {
+        return subTasks;
+    }
+
+    protected void addSubTask(int counter) {
+        subTasks.add(counter);
     }
 
     protected void removeSubTask(int id) {
         subTasks.remove(id);
-        updateStatus();
     }
 
     protected void clearSubTasks() {
         subTasks.clear();
-        this.setStatus(TaskStatus.DONE);
-    }
-
-    protected void updateStatus() {
-        int doneSubs = 0;
-        int newSubs = 0;
-        for (SubTask subTask : subTasks.values()) {
-            if (subTask.getStatus().equals(TaskStatus.IN_PROGRESS)) {
-                this.setStatus(TaskStatus.IN_PROGRESS);
-                break;
-            } else if (subTask.getStatus().equals(TaskStatus.NEW)) {
-                newSubs++;
-            } else
-                doneSubs++;
-        }
-        if (doneSubs == subTasks.size())
-            this.setStatus(TaskStatus.DONE);
-        else if (newSubs == subTasks.size())
-            this.setStatus(TaskStatus.NEW);
-        else
-            this.setStatus(TaskStatus.IN_PROGRESS);
-
-    }
-
-    protected SubTask getSubTaskById(int id) {
-        return subTasks.get(id);
-    }
-
-    protected void updateSubTask(SubTask newSubTask) {
-        subTasks.replace(newSubTask.getId(), newSubTask);
-        updateStatus();
     }
 
     @Override

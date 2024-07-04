@@ -1,13 +1,17 @@
 import java.util.Objects;
 
 public class Task {
-    private final int id;
+    private int id;
     private String name;
     private String description;
     private TaskStatus status;
 
     protected int getId() {
         return id;
+    }
+
+    protected void setId(int id){
+        this.id = id;
     }
 
     protected String getName() {
@@ -34,13 +38,18 @@ public class Task {
         this.status = status;
     }
 
-    protected Task(int id, String name, String description) {
+    public Task(int id, String name, String description, TaskStatus status) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.status = TaskStatus.NEW;
+        this.status = status;
     }
 
+    public Task(String name, String description, TaskStatus status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
 
     @Override
     public String toString() {
