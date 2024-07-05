@@ -1,8 +1,8 @@
-import Management.TaskManager;
-import Model.Epic;
-import Model.SubTask;
-import Model.Task;
-import Model.TaskStatus;
+import management.TaskManager;
+import model.Epic;
+import model.SubTask;
+import model.Task;
+import model.TaskStatus;
 
 import java.util.Scanner;
 

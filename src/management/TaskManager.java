@@ -1,9 +1,9 @@
-package Management;
+package management;
 
-import Model.Epic;
-import Model.Task;
-import Model.TaskStatus;
-import Model.SubTask;
+import model.Epic;
+import model.Task;
+import model.TaskStatus;
+import model.SubTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
