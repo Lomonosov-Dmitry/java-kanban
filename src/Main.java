@@ -1,3 +1,9 @@
+import Management.TaskManager;
+import Model.Epic;
+import Model.SubTask;
+import Model.Task;
+import Model.TaskStatus;
+
 import java.util.Scanner;
 
 public class Main {

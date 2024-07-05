@@ -1,3 +1,5 @@
+package Model;
+
 import java.util.Objects;
 
 public class Task {
@@ -6,35 +8,35 @@ public class Task {
     private String description;
     private TaskStatus status;
 
-    protected int getId() {
+    public int getId() {
         return id;
     }
 
-    protected void setId(int id){
+    public void setId(int id){
         this.id = id;
     }
 
-    protected String getName() {
+    public String getName() {
         return name;
     }
 
-    protected void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    protected String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    protected void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    protected TaskStatus getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    protected void setStatus(TaskStatus status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
@@ -53,7 +55,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "Model.Task{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

@@ -1,3 +1,10 @@
+package Management;
+
+import Model.Epic;
+import Model.Task;
+import Model.TaskStatus;
+import Model.SubTask;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,7 +15,7 @@ public class TaskManager {
     private final HashMap<Integer, SubTask> subTasks;
 
     public TaskManager() {
-        this.counter = 0;
+        this.counter = 1;
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
@@ -28,11 +35,13 @@ public class TaskManager {
     }
 
     public void addSubTask(SubTask subTask) {
-        subTask.setId(counter);
-        subTasks.put(counter, subTask);
-        getEpicById(subTask.getEpicId()).addSubTask(counter);
-        counter++;
-        updateEpicStatus(subTask.getEpicId());
+        if (epics.containsKey(subTask.getEpicId())) {
+            subTask.setId(counter);
+            subTasks.put(counter, subTask);
+            epics.get(subTask.getEpicId()).addSubTask(counter);
+            counter++;
+            updateEpicStatus(subTask.getEpicId());
+        }
     }
 
     public Task getTaskById(int id) {
@@ -53,6 +62,7 @@ public class TaskManager {
 
     public void clearEpics() {
         epics.clear();
+        subTasks.clear();
     }
 
     public void clearEpicSubTasks(int epicId) {
@@ -74,18 +84,22 @@ public class TaskManager {
     }
 
     public void removeEpic(int epicId) {
-        ArrayList<Integer> subs = getEpicById(epicId).getSubTasks();
-        for (Integer subNum : subs) {
-            subTasks.remove(subNum);
+        if (epics.containsKey(epicId)) {
+            ArrayList<Integer> subs = epics.get(epicId).getSubTasks();
+            for (Integer subNum : subs) {
+                subTasks.remove(subNum);
+            }
+            epics.remove(epicId);
         }
-        epics.remove(epicId);
     }
 
     public void removeSubTask(int subTaskId) {
-        int epicId = getSubTaskById(subTaskId).getEpicId();
-        getEpicById(epicId).removeSubTask(subTaskId);
-        subTasks.remove(subTaskId);
-        updateEpicStatus(epicId);
+       if(subTasks.containsKey(subTaskId)) {
+           int epicId = subTasks.get(subTaskId).getEpicId();
+           epics.get(epicId).removeSubTask(subTaskId);
+           subTasks.remove(subTaskId);
+           updateEpicStatus(epicId);
+       }
     }
 
     public ArrayList<Task> getAllTasks() {
@@ -100,35 +114,44 @@ public class TaskManager {
         return allEpics;
     }
 
-    public ArrayList<SubTask> getAllSubTasks(){
+    public ArrayList<SubTask> getAllSubTasks() {
         ArrayList<SubTask> allSubTasks = new ArrayList<>();
         allSubTasks.addAll(subTasks.values());
         return allSubTasks;
     }
 
-    public ArrayList<SubTask> getSubTaskByEpic (int epicId){
-        ArrayList<SubTask> epicSubTasks = new ArrayList<>();
-        for (SubTask subTask : subTasks.values()) {
-            if(subTask.getEpicId() == epicId)
-                epicSubTasks.add(subTask);
+    public ArrayList<SubTask> getSubTaskByEpic(int epicId) {
+        if(epics.containsKey(epicId)) {
+            ArrayList<SubTask> epicSubTasks = new ArrayList<>();
+            ArrayList<Integer> subTasksId = epics.get(epicId).getSubTasks();
+            for (Integer id : subTasksId) {
+                epicSubTasks.add(subTasks.get(id));
+            }
+            return epicSubTasks;
         }
-        return epicSubTasks;
+        return null;
     }
 
     public void updateTask(Task newTask) {
         tasks.replace(newTask.getId(), newTask);
     }
 
-    //Тут можно было пойти заменой всего объекта, но смысла не вижу, мы можем обновлять всего два поля.
     public void updateEpic(Epic newEpic) {
         Epic epicForUpdate = epics.get(newEpic.getId());
-        epicForUpdate.setName(newEpic.getName());
-        epicForUpdate.setDescription(newEpic.getDescription());
+        if(epicForUpdate != null) {
+            epicForUpdate.setName(newEpic.getName());
+            epicForUpdate.setDescription(newEpic.getDescription());
+        }
     }
 
     public void updateSubTask(SubTask newSubTask) {
-        subTasks.replace(newSubTask.getId(), newSubTask);
-        updateEpicStatus(newSubTask.getEpicId());
+        SubTask oldSubTask = subTasks.get(newSubTask.getId());
+        if(oldSubTask != null) {
+            if(oldSubTask.getEpicId() == newSubTask.getEpicId()) {
+                subTasks.replace(newSubTask.getId(), newSubTask);
+                updateEpicStatus(newSubTask.getEpicId());
+            }
+        }
     }
 
     private void updateEpicStatus(int epicId) {

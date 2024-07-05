@@ -1,3 +1,5 @@
+package Model;
+
 import java.util.ArrayList;
 
 public class Epic extends Task {
@@ -14,25 +16,25 @@ public class Epic extends Task {
         this.subTasks = new ArrayList<>();
     }
 
-    protected ArrayList<Integer> getSubTasks() {
+    public ArrayList<Integer> getSubTasks() {
         return subTasks;
     }
 
-    protected void addSubTask(int counter) {
+    public void addSubTask(int counter) {
         subTasks.add(counter);
     }
 
-    protected void removeSubTask(int id) {
-        subTasks.remove(id);
+    public void removeSubTask(int id) {
+        subTasks.remove(Integer.valueOf(id));
     }
 
-    protected void clearSubTasks() {
+    public void clearSubTasks() {
         subTasks.clear();
     }
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "Model.Epic{" +
                 "id=" + this.getId() + '\'' +
                 ", status=" + this.getStatus() + '\'' +
                 "subTasks=" + subTasks.toString() +

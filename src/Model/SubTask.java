@@ -1,3 +1,5 @@
+package Model;
+
 public class SubTask extends Task {
 
     private final int epicId;
@@ -12,19 +14,13 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
-    protected int getEpicId(){
+    public int getEpicId(){
         return epicId;
     }
 
-//    @Override
-//    protected void setStatus(TaskStatus status) {
-//        super.setStatus(status);
-//        epic.updateStatus();
-//    }
-
     @Override
     public String toString() {
-        return "SubTask{" +
+        return "Model.SubTask{" +
                 "id=" + this.getId() +
                 ", name='" + this.getName() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
