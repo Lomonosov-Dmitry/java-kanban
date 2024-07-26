@@ -3,7 +3,7 @@ package management;
 public class Managers {
 
     private TaskManager taskManager;
-    private final HistoryManager historyManager;
+    private static HistoryManager historyManager = null;
 
     public Managers() {
         this.historyManager = new InMemoryHistoryManager();
@@ -14,7 +14,7 @@ public class Managers {
         return taskManager;
     }
 
-    public HistoryManager getDefaultHistory(){
+    public static HistoryManager getDefaultHistory(){
         return historyManager;
     }
 }

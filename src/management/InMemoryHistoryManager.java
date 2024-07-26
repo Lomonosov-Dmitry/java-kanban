@@ -5,7 +5,7 @@ import model.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InMemoryHistoryManager implements HistoryManager{
+public class InMemoryHistoryManager implements HistoryManager {
     private final List<Task> taskHistory;
 
     public InMemoryHistoryManager() {
@@ -16,14 +16,13 @@ public class InMemoryHistoryManager implements HistoryManager{
     //Писать больше (3 метода править), а проверка так или иначе будет выполняться только для этого метода по-сути.
     //Логика работы методов получения задачи по ID предполагает получение на выходе задачи или null, если не найдено.
     //Возможно я чего-то не понял.
+    //Вот же я затупил! Надо больше спать...
     @Override
     public <T extends Task> void add(T task) {
         if (task != null) {
-            if (taskHistory.size() == 10) {
+            if (taskHistory.size() == 10)
                 taskHistory.removeFirst();
-                taskHistory.add(task);
-            } else
-                taskHistory.add(task);
+            taskHistory.add(task);
         }
     }
 
