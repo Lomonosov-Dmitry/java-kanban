@@ -6,8 +6,8 @@ public class Managers {
     private final HistoryManager historyManager;
 
     public Managers() {
-        this.taskManager = new InMemoryTaskManager(this);
         this.historyManager = new InMemoryHistoryManager();
+        this.taskManager = new InMemoryTaskManager(historyManager);
     }
 
     public TaskManager getDefault(){

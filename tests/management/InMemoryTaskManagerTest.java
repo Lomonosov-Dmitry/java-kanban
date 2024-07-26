@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,7 +43,7 @@ class InMemoryTaskManagerTest {
         managers.getDefault().getTaskById(1);
         managers.getDefault().getEpicById(2);
 
-        ArrayList<Task> tasks = managers.getDefaultHistory().getHistory();
+        List<Task> tasks = managers.getDefaultHistory().getHistory();
         assertEquals(task.getName(), tasks.get(0).getName(), "Имена не совпадают!");
         assertEquals(task.getDescription(), tasks.get(0).getDescription(), "Описания не совпадают!");
         assertEquals(task.getStatus(), tasks.get(0).getStatus(), "Статусы не совпадают!");
