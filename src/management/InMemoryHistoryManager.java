@@ -1,33 +1,120 @@
 package management;
 
 import model.Task;
+import model.Node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final List<Task> taskHistory;
+
+    private HistoryLinkedList historyLinkedList;
 
     public InMemoryHistoryManager() {
-        this.taskHistory = new ArrayList<>();
+        this.historyLinkedList = new HistoryLinkedList();
     }
 
-    //Если имелась ввиду проверка на null в вызывающих методах, то мне кажется это не целесообразным.
-    //Писать больше (3 метода править), а проверка так или иначе будет выполняться только для этого метода по-сути.
-    //Логика работы методов получения задачи по ID предполагает получение на выходе задачи или null, если не найдено.
-    //Возможно я чего-то не понял.
-    //Вот же я затупил! Надо больше спать...
     @Override
     public <T extends Task> void add(T task) {
-        if (task != null) {
-            if (taskHistory.size() == 10)
-                taskHistory.removeFirst();
-            taskHistory.add(task);
-        }
+        historyLinkedList.linkLast(task);
+    }
+
+    @Override
+    public void remove(int id) {
+        historyLinkedList.removeTaskById(id);
     }
 
     @Override
     public List<Task> getHistory() {
-        return new ArrayList<>(taskHistory);
+        return historyLinkedList.getTasks();
+    }
+}
+
+class HistoryLinkedList {
+    public Node<Task> head;
+    public Node<Task> tail;
+    public int size = 0;
+    private final HashSet<Node<Task>> historySet;
+    private final HashMap<Integer, Node<Task>> historyMap;
+
+    public HistoryLinkedList() {
+        this.head = null;
+        this.tail = null;
+        historySet = new HashSet<>();
+        historyMap = new HashMap<>();
+    }
+
+    public <T extends Task> void linkLast(T task) {
+        if (head == null) {
+            Node<Task> newNode = new Node<>(task);
+            historySet.add(newNode);
+            head = newNode;
+            tail = newNode;
+            historyMap.put(task.getId(), newNode);
+        } else if (head.data.equals(task) && historySet.size() == 1) {
+            head.data = task;
+            return;
+        } else {
+            if (historyMap.containsKey(task.getId()))
+                removeNode(historyMap.get(task.getId()));
+            Node<Task> newNode = new Node<>(task);
+            newNode.prev = tail;
+            tail.next = newNode;
+            tail = newNode;
+            historySet.add(newNode);
+            historyMap.put(task.getId(), newNode);
+        }
+        size++;
+
+    }
+
+    public void removeTaskById(int id) {
+        if (historyMap.containsKey(id)) {
+            removeNode(historyMap.get(id));
+            historyMap.remove(id);
+        }
+    }
+
+    private void removeNode(Node<Task> node) {
+        if (node != null) {
+            historyMap.remove(node.data.getId());
+            if (node.prev == null && node.next == null) {
+                historySet.clear();
+                head = null;
+                tail = null;
+            } else {
+                if (node.prev == null) {
+                    Node<Task> nextNode = node.next;
+                    nextNode.prev = null;
+                    head = nextNode;
+                } else if (node.next == null) {
+                    Node<Task> privNode = node.prev;
+                    privNode.next = null;
+                    tail = privNode;
+                } else {
+                    Node<Task> privNode = node.prev;
+                    Node<Task> nextNode = node.next;
+                    privNode.next = nextNode;
+                    nextNode.prev = privNode;
+                }
+                historySet.remove(node);
+                size--;
+            }
+        }
+    }
+
+    public ArrayList<Task> getTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        if (tail != null) {
+            Node<Task> node = tail;
+            while (node.prev != null) {
+                tasks.add(node.data);
+                node = node.prev;
+            }
+            tasks.add(node.data);
+        }
+        return tasks;
     }
 }
