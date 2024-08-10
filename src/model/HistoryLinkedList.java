@@ -26,21 +26,25 @@ public class HistoryLinkedList {
 
     public void removeTaskById(int id) {
         if (historyMap.containsKey(id)) {
-            removeNode(historyMap.get(id));
+                removeNode(historyMap.get(id));
         }
     }
 
     private void removeNode(Node<Task> node) {
         if (node != null) {
             historyMap.remove(node.data.getId());
-            if (node.next == null) {
-                tail = node.prev;
-                node.prev.next = null;
-            } else if (node.prev == null) {
-                node.next.prev = null;
-            } else {
-                node.prev.next = node.next;
-                node.next.prev = node.prev;
+            if (historyMap.isEmpty())
+                tail = null;
+            else {
+                if (node == tail) {
+                    tail = node.prev;
+                    node.prev.next = null;
+                } else if (node.prev == null) {
+                    node.next.prev = null;
+                } else {
+                    node.prev.next = node.next;
+                    node.next.prev = node.prev;
+                }
             }
         }
     }
