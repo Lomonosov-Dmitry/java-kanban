@@ -14,7 +14,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     private final String file;
 
-    public FileBackedTaskManager(HistoryManager historyManager, String file){
+    public FileBackedTaskManager(HistoryManager historyManager, String file) {
         super(historyManager);
         this.file = file;
         startFileOperations();
@@ -82,20 +82,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     private void saveFile() {
         List<String> tasks = saveTasks();
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             for (String task : tasks) {
                 writer.write(task);
                 writer.newLine();
             }
-        } catch (IOException e) {
-            throw new ManagerSaveException();
-        }
-    }
-
-    private void save(Task task) {
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8, true))) {
-                writer.write(task.toCSV());
-                writer.newLine();
         } catch (IOException e) {
             throw new ManagerSaveException();
         }
@@ -133,13 +124,4 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 }
 
-class compareById implements Comparator<Task> {
 
-    @Override
-    public int compare(Task task1, Task task2) {
-        if (task1.getId() > task2.getId())
-            return 1;
-        else
-            return -1;
-    }
-}
