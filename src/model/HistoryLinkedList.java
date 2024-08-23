@@ -48,7 +48,6 @@ public class HistoryLinkedList {
             }
         }
     }
-
     public ArrayList<Task> getTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
         if (tail != null) {

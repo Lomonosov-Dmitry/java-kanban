@@ -41,4 +41,13 @@ public class Epic extends Task {
                 '}';
     }
 
+    @Override
+    public String toCSV() {
+        return this.getId() + "," +
+                "EPIC," +
+                this.getName() + "," +
+                this.getStatus() + "," +
+                this.getDescription();
+    }
+
 }

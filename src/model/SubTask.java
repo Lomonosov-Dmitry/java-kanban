@@ -28,4 +28,14 @@ public class SubTask extends Task {
                 ", epic=" + epicId +
                 '}';
     }
+
+    @Override
+    public String toCSV() {
+        return this.getId() + "," +
+                "SUBTASK," +
+                this.getName() + "," +
+                this.getStatus() + "," +
+                this.getDescription() + "," +
+                epicId;
+    }
 }
