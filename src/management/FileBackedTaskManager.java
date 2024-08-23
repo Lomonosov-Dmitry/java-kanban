@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
@@ -97,7 +96,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         arrangedById.addAll(getAllTasks());
         arrangedById.addAll(getAllEpics());
         arrangedById.addAll(getAllSubTasks());
-        arrangedById.sort(new compareById());
+        arrangedById.sort(new CompareById());
         List<String> tasksCSV = new ArrayList<>();
         for (Task task : arrangedById) {
             tasksCSV.add(task.toCSV());
