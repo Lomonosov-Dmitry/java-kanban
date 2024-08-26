@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
+public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final String file;
 
@@ -24,7 +24,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             try {
                 Files.createFile(Path.of(file));
             } catch (IOException e) {
-                throw new ManagerSaveException();
+                throw new ManagerSaveException("Ошибка создания файла");
             }
         } else {
             loadFile();
@@ -34,11 +34,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     private void loadFile() {
         List<String> tasksFromFile = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+            reader.readLine();
             while (reader.ready()) {
                 tasksFromFile.add(reader.readLine());
             }
         } catch (IOException e) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException("Ошибка чтения файла");
         }
         if (!tasksFromFile.isEmpty())
             loadTasks(tasksFromFile);
@@ -47,21 +48,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     private void loadTasks(List<String> tasksFromFile) {
         for (String s : tasksFromFile) {
             String[] taskSource = s.split(",");
-            TaskStatus status = null;
-            switch (taskSource[3]) {
-                case "NEW": {
-                    status = TaskStatus.NEW;
-                    break;
-                }
-                case "IN_PROGRESS": {
-                    status = TaskStatus.IN_PROGRESS;
-                    break;
-                }
-                case "DONE": {
-                    status = TaskStatus.DONE;
-                    break;
-                }
-            }
+            TaskStatus status = TaskStatus.valueOf(taskSource[3]);
             switch (taskSource[1]) {
                 case "TASK": {
                     super.addTask(new Task(Integer.parseInt(taskSource[0]), taskSource[2], taskSource[4], status));
@@ -82,12 +69,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     private void saveFile() {
         List<String> tasks = saveTasks();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
+            writer.write("id,type,name,status,description,epic");
+            writer.newLine();
             for (String task : tasks) {
                 writer.write(task);
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException("Ошибка сохранения файла");
         }
     }
 
@@ -119,6 +108,60 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     @Override
     public void addSubTask(SubTask subTask) {
         super.addSubTask(subTask);
+        saveFile();
+    }
+
+    @Override
+    public void updateTask(Task newTask) {
+        super.updateTask(newTask);
+        saveFile();
+    }
+
+    @Override
+    public void updateEpic(Epic newEpic) {
+        super.updateEpic(newEpic);
+        saveFile();
+    }
+
+    @Override
+    public void updateSubTask(SubTask newSubTask) {
+        super.updateSubTask(newSubTask);
+        saveFile();
+    }
+
+    @Override
+    public void removeTask(int taskId) {
+        super.removeTask(taskId);
+        saveFile();
+    }
+
+    @Override
+    public void removeEpic(int epicId) {
+        super.removeEpic(epicId);
+        saveFile();
+    }
+
+    @Override
+    public void removeSubTask(int subTaskId) {
+        super.removeSubTask(subTaskId);
+        saveFile();
+    }
+
+    @Override
+    public void clearTasks() {
+        super.clearTasks();
+        saveFile();
+    }
+
+    @Override
+    public void clearEpics() {
+        super.clearEpics();
+        saveFile();
+    }
+
+    @Override
+    public void clearSubTasks() {
+        super.clearSubTasks();
         saveFile();
     }
 }
