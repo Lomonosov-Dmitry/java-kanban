@@ -38,7 +38,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected void addTaskWithId(Task newTask) {
-        if(!tasks.containsKey(newTask.getId())) {
+        if (!tasks.containsKey(newTask.getId())) {
             tasks.put(newTask.getId(), newTask);
         }
     }
@@ -51,7 +51,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected void addEpicWithId(Epic newEpic) {
-        if(!epics.containsKey(newEpic.getId())) {
+        if (!epics.containsKey(newEpic.getId())) {
             epics.put(newEpic.getId(), newEpic);
         }
     }
@@ -68,7 +68,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected void addSubTaskWithId(SubTask subTask) {
-        if(!subTasks.containsKey(subTask.getId())) {
+        if (!subTasks.containsKey(subTask.getId())) {
             subTasks.put(subTask.getId(), subTask);
             epics.get(subTask.getEpicId()).addSubTask(subTask.getId());
             updateEpicStatus(subTask.getEpicId());
