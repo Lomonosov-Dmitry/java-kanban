@@ -75,4 +75,12 @@ public class Task {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    public String toCSV() {
+        return id + "," +
+                "TASK," +
+                name + "," +
+                status + "," +
+                description;
+    }
 }
