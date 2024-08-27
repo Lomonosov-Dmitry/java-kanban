@@ -26,11 +26,21 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
 
+    protected void setCounter(int counter) {
+        this.counter = counter;
+    }
+
     @Override
     public void addTask(Task newTask) {
         newTask.setId(counter);
         tasks.put(counter, newTask);
         counter++;
+    }
+
+    protected void addTaskWithId(Task newTask) {
+        if(!tasks.containsKey(newTask.getId())) {
+            tasks.put(newTask.getId(), newTask);
+        }
     }
 
     @Override
@@ -40,6 +50,12 @@ public class InMemoryTaskManager implements TaskManager {
         counter++;
     }
 
+    protected void addEpicWithId(Epic newEpic) {
+        if(!epics.containsKey(newEpic.getId())) {
+            epics.put(newEpic.getId(), newEpic);
+        }
+    }
+
     @Override
     public void addSubTask(SubTask subTask) {
         if (epics.containsKey(subTask.getEpicId())) {
@@ -47,6 +63,14 @@ public class InMemoryTaskManager implements TaskManager {
             subTasks.put(counter, subTask);
             epics.get(subTask.getEpicId()).addSubTask(counter);
             counter++;
+            updateEpicStatus(subTask.getEpicId());
+        }
+    }
+
+    protected void addSubTaskWithId(SubTask subTask) {
+        if(!subTasks.containsKey(subTask.getId())) {
+            subTasks.put(subTask.getId(), subTask);
+            epics.get(subTask.getEpicId()).addSubTask(subTask.getId());
             updateEpicStatus(subTask.getEpicId());
         }
     }

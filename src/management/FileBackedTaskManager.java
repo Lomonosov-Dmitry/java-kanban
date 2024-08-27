@@ -46,24 +46,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void loadTasks(List<String> tasksFromFile) {
+        int counter = 0;
         for (String s : tasksFromFile) {
             String[] taskSource = s.split(",");
+            counter = Integer.parseInt(taskSource[0]);
             TaskStatus status = TaskStatus.valueOf(taskSource[3]);
             switch (taskSource[1]) {
                 case "TASK": {
-                    super.addTask(new Task(Integer.parseInt(taskSource[0]), taskSource[2], taskSource[4], status));
+                    super.addTaskWithId(new Task(counter, taskSource[2], taskSource[4], status));
                     break;
                 }
                 case "EPIC": {
-                    super.addEpic(new Epic(Integer.parseInt(taskSource[0]), taskSource[2], taskSource[4]));
+                    super.addEpicWithId(new Epic(counter, taskSource[2], taskSource[4]));
                     break;
                 }
                 case "SUBTASK": {
-                    super.addSubTask(new SubTask(Integer.parseInt(taskSource[0]), taskSource[2], taskSource[4], status, Integer.parseInt(taskSource[5])));
+                    super.addSubTaskWithId(new SubTask(counter, taskSource[2], taskSource[4], status, Integer.parseInt(taskSource[5])));
                     break;
                 }
             }
         }
+        setCounter(counter + 1);
     }
 
     private void saveFile() {
