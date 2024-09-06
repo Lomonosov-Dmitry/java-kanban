@@ -30,9 +30,9 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager>{
         managers.getDefault().addEpic(epic);
         managers.getDefault().addSubTask(subTask);
 
-        assertEquals(task, managers.getDefault().getTaskById(1), "Задача не найдена!");
-        assertEquals(epic, managers.getDefault().getEpicById(2), "Эпик не найден!");
-        assertEquals(subTask, managers.getDefault().getSubTaskById(3), "Подзадача не найдена!");
+        assertEquals(task, managers.getDefault().getTaskById(1).get(), "Задача не найдена!");
+        assertEquals(epic, managers.getDefault().getEpicById(2).get(), "Эпик не найден!");
+        assertEquals(subTask, managers.getDefault().getSubTaskById(3).get(), "Подзадача не найдена!");
     }
 
     @Test
