@@ -12,7 +12,7 @@ public class Task {
     private TaskStatus status;
     private Duration duration;
     private LocalDateTime startTime;
-    DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy; HH:mm");
+    protected DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy; HH:mm");
 
     public int getId() {
         return id;
@@ -118,7 +118,7 @@ public class Task {
     public String toCSV() {
         String finalString = String.format("%d,TASK,%s,%s,%s,", id, name, status, description);
         if (startTime != null && duration != null)
-            finalString += "," + startTime.format(DATE_TIME_FORMATTER) + "," + duration.toMinutes();
+            finalString += "," + startTime.format(dateTimeFormatter) + "," + duration.toMinutes();
         return finalString;
     }
 

@@ -8,7 +8,7 @@ public class Epic extends Task {
 
     private final ArrayList<Integer> subTasks;
     private LocalDateTime endTime;
-    DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy; HH:mm");
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy; HH:mm");
 
     public Epic(String name, String description) {
         super(name, description, TaskStatus.NEW);
@@ -57,8 +57,8 @@ public class Epic extends Task {
     @Override
     public String toCSV() {
         String finalString = String.format("%d,EPIC,%s,%s,%s,", this.getId(), this.getName(), this.getStatus(), this.getDescription());
-        if(this.getStartTime() != null && this.getDuration() != null)
-                finalString += "," + this.getStartTime().format(DATE_TIME_FORMATTER) + "," + this.getDuration().toMinutes();
+        if (this.getStartTime() != null && this.getDuration() != null)
+                finalString += "," + this.getStartTime().format(dateTimeFormatter) + "," + this.getDuration().toMinutes();
         return finalString;
     }
 

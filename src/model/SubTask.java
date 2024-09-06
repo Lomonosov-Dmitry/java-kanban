@@ -46,7 +46,7 @@ public class SubTask extends Task {
     public String toCSV() {
         String finalString = String.format("%d,SUBTASK,%s,%s,%s,%d", this.getId(), this.getName(), this.getStatus(), this.getDescription(), epicId);
         if (this.getStartTime() != null && this.getDuration() != null)
-            finalString += "," + this.getStartTime().format(DATE_TIME_FORMATTER) + "," + this.getDuration().toMinutes();
+            finalString += "," + this.getStartTime().format(dateTimeFormatter) + "," + this.getDuration().toMinutes();
         return finalString;
     }
 }
