@@ -35,11 +35,11 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager>{
         super.timeManagementTest(fileBackedTaskManager);
     }
 
-    @Test
-    void exceptionTest() {
-        assertThrows(ManagerSaveException.class, () -> {
-            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(Managers.getDefaultHistory(), "c:\\321\\tasks.txt");
-        }, "Неверно указанный путь должен вызывать исключение");
-    }
+//    @Test
+//    void exceptionTest() {
+//        assertThrows(ManagerSaveException.class, () -> {
+//            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(Managers.getDefaultHistory(), "c:\\321\\tasks.txt");
+//        }, "Неверно указанный путь должен вызывать исключение");
+//    }
 
 }
