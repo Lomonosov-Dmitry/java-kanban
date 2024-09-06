@@ -1,13 +1,8 @@
 package management;
 
-import model.Epic;
-import model.Task;
-import model.TaskStatus;
-import model.SubTask;
+import model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private int counter;
@@ -15,6 +10,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics;
     private final HashMap<Integer, SubTask> subTasks;
     private final HistoryManager historyManager;
+    private final TreeSet<Task> timesortedTasks;
 
 
     public InMemoryTaskManager(HistoryManager historyManager) {
@@ -23,6 +19,7 @@ public class InMemoryTaskManager implements TaskManager {
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
         this.historyManager = Managers.getDefaultHistory();
+        this.timesortedTasks = new TreeSet<>(new CompareByTime());
     }
 
 
@@ -32,9 +29,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task newTask) {
-        newTask.setId(counter);
-        tasks.put(counter, newTask);
-        counter++;
+        if (timeValidator(newTask)) {
+            newTask.setId(counter);
+            tasks.put(counter, newTask);
+            counter++;
+            if (newTask.getStartTime() != null)
+                timesortedTasks.add(newTask);
+        }
     }
 
     protected void addTaskWithId(Task newTask) {
@@ -58,12 +59,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubTask(SubTask subTask) {
-        if (epics.containsKey(subTask.getEpicId())) {
+        if (epics.containsKey(subTask.getEpicId()) && timeValidator(subTask)) {
             subTask.setId(counter);
             subTasks.put(counter, subTask);
             epics.get(subTask.getEpicId()).addSubTask(counter);
             counter++;
             updateEpicStatus(subTask.getEpicId());
+            if (subTask.getStartTime() != null)
+                timesortedTasks.add(subTask);
         }
     }
 
@@ -76,24 +79,37 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTaskById(int id) {
+    public Optional<Task> getTaskById(int id) {
         Task task = tasks.get(id);
-        historyManager.add(task);
-        return task;
+        if (task != null) {
+            historyManager.add(task);
+            return Optional.of(task);
+        } else
+            return Optional.empty();
     }
 
     @Override
-    public Epic getEpicById(int id) {
+    public Optional<Epic> getEpicById(int id) {
         Epic epic = epics.get(id);
-        historyManager.add(epic);
-        return epic;
+        if (epic != null) {
+            historyManager.add(epic);
+            return Optional.of(epic);
+        } else
+            return Optional.empty();
     }
 
     @Override
-    public SubTask getSubTaskById(int id) {
+    public Optional<SubTask> getSubTaskById(int id) {
         SubTask subTask = subTasks.get(id);
-        historyManager.add(subTask);
-        return subTask;
+        if (subTask != null) {
+            historyManager.add(subTask);
+            return Optional.of(subTask);
+        } else
+            return Optional.empty();
+    }
+
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(timesortedTasks);
     }
 
     @Override
@@ -165,23 +181,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getAllTasks() {
-        ArrayList<Task> allTasks = new ArrayList<>();
-        allTasks.addAll(tasks.values());
-        return allTasks;
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
     public ArrayList<Epic> getAllEpics() {
-        ArrayList<Epic> allEpics = new ArrayList<>();
-        allEpics.addAll(epics.values());
-        return allEpics;
+        return new ArrayList<>(epics.values());
     }
 
     @Override
     public ArrayList<SubTask> getAllSubTasks() {
-        ArrayList<SubTask> allSubTasks = new ArrayList<>();
-        allSubTasks.addAll(subTasks.values());
-        return allSubTasks;
+        return new ArrayList<>(subTasks.values());
     }
 
     @Override
@@ -246,8 +256,41 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(TaskStatus.DONE);
         else
             epic.setStatus(TaskStatus.IN_PROGRESS);
+        updateEpicTime(epicId);
 
+    }
 
+    protected void updateEpicTime(int epicId) {
+        Epic epic = epics.get(epicId);
+        subTasks.values().stream()
+                .filter(subTask -> subTask.getEpicId() == epicId)
+                .filter(subTask -> subTask.getStartTime() != null)
+                .filter(subTask -> subTask.getDuration() != null)
+                .peek(subTask -> {
+                    if (epic.getDuration() == null)
+                        epic.setDuration(subTask.getDuration());
+                    else
+                        epic.setDuration(epic.getDuration().plus(subTask.getDuration()));
+                })
+                .min((sub1, sub2) -> {
+                    if (sub1.getStartTime().isBefore(sub2.getStartTime()))
+                        return -1;
+                    else if (sub1.getStartTime().isAfter(sub2.getStartTime()))
+                        return 1;
+                    else
+                        return 0;
+                })
+                .ifPresent(subtask -> epic.setStartTime(subtask.getStartTime()));
+        if (epic.getStartTime() != null && epic.getDuration() != null)
+            epic.setEndTime(epic.getStartTime().plus(epic.getDuration()));
+    }
+
+    protected boolean timeValidator(Task newTask) {
+        long count = getPrioritizedTasks().stream()
+                .filter(task -> task.getStartTime().plus(task.getDuration()).isAfter(newTask.getStartTime()))
+                .filter(task -> task.getStartTime().isBefore(newTask.getStartTime().plus(newTask.getDuration())))
+                .count();
+        return count <= 0;
     }
 
     private void clearHistory(String taskType) {

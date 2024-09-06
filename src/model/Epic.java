@@ -1,10 +1,14 @@
 package model;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Epic extends Task {
 
     private final ArrayList<Integer> subTasks;
+    private LocalDateTime endTime;
+    DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy; HH:mm");
 
     public Epic(String name, String description) {
         super(name, description, TaskStatus.NEW);
@@ -14,6 +18,15 @@ public class Epic extends Task {
     public Epic(int id, String name, String description) {
         super(id, name, description, TaskStatus.NEW);
         this.subTasks = new ArrayList<>();
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     public ArrayList<Integer> getSubTasks() {
@@ -43,11 +56,10 @@ public class Epic extends Task {
 
     @Override
     public String toCSV() {
-        return this.getId() + "," +
-                "EPIC," +
-                this.getName() + "," +
-                this.getStatus() + "," +
-                this.getDescription();
+        String finalString = String.format("%d,EPIC,%s,%s,%s,", this.getId(), this.getName(), this.getStatus(), this.getDescription());
+        if(this.getStartTime() != null && this.getDuration() != null)
+                finalString += "," + this.getStartTime().format(DATE_TIME_FORMATTER) + "," + this.getDuration().toMinutes();
+        return finalString;
     }
 
 }

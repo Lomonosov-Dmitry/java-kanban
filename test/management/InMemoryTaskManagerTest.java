@@ -7,12 +7,11 @@ import model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
+class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager>{
 
     Managers managers = new Managers();
     Task task = new Task("aaa", "bbb", TaskStatus.NEW);
@@ -47,5 +46,15 @@ class InMemoryTaskManagerTest {
         assertEquals(task.getName(), tasks.get(0).getName(), "Имена не совпадают!");
         assertEquals(task.getDescription(), tasks.get(0).getDescription(), "Описания не совпадают!");
         assertEquals(task.getStatus(), tasks.get(0).getStatus(), "Статусы не совпадают!");
+    }
+
+    @Test
+    void epicStatusCountingTest() {
+        super.epicStatusCountingTest(managers.getDefault());
+    }
+
+    @Test
+    void timeManagementTest() {
+        super.timeManagementTest(managers.getDefault());
     }
 }
