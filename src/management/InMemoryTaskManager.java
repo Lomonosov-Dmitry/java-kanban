@@ -5,7 +5,6 @@ import model.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     private int counter;
@@ -286,9 +285,7 @@ public class InMemoryTaskManager implements TaskManager {
                 epic.setDuration(duration);
                 epic.setEndTime(epicStart.plus(duration));
             } else
-            {
                 epic.setEndTime(null);
-            }
         }
     }
 
