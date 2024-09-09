@@ -8,7 +8,6 @@ public class Epic extends Task {
 
     private final ArrayList<Integer> subTasks;
     private LocalDateTime endTime;
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy; HH:mm");
 
     public Epic(String name, String description) {
         super(name, description, TaskStatus.NEW);
