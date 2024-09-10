@@ -275,6 +275,8 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setEndTime(null);
             for (Task sub : subs) {
                 if (sub.getStartTime() != null) {
+                    if(epicStart == null)
+                        epicStart = sub.getStartTime();
                     if (sub.getStartTime().isBefore(epicStart))
                         epicStart = sub.getStartTime();
                     duration.plus(sub.getDuration());
@@ -284,8 +286,11 @@ public class InMemoryTaskManager implements TaskManager {
                 epic.setStartTime(epicStart);
                 epic.setDuration(duration);
                 epic.setEndTime(epicStart.plus(duration));
-            } else
+            } else {
+                epic.setStartTime(null);
+                epic.setDuration(null);
                 epic.setEndTime(null);
+            }
         }
     }
 
