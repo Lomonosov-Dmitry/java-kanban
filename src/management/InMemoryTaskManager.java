@@ -275,7 +275,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setEndTime(null);
             for (Task sub : subs) {
                 if (sub.getStartTime() != null) {
-                    if(epicStart == null)
+                    if (epicStart == null)
                         epicStart = sub.getStartTime();
                     if (sub.getStartTime().isBefore(epicStart))
                         epicStart = sub.getStartTime();
