@@ -6,6 +6,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,9 +54,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String[] taskSource = s.split(",");
             counter = Integer.parseInt(taskSource[0]);
             TaskStatus status = TaskStatus.valueOf(taskSource[3]);
+            LocalDateTime time = null;
+            Duration duration = null;
+            if (taskSource.length > 5) {
+                time = LocalDateTime.parse(taskSource[6], DateTimeFormatter.ofPattern("dd.MM.yyyy; HH:mm"));
+                duration = Duration.ofMinutes(Long.parseLong(taskSource[7]));
+            }
             switch (taskSource[1]) {
                 case "TASK": {
-                    super.addTaskWithId(new Task(counter, taskSource[2], taskSource[4], status));
+                    super.addTaskWithId(new Task(counter, taskSource[2], taskSource[4], status, time, duration));
                     break;
                 }
                 case "EPIC": {
@@ -61,7 +70,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     break;
                 }
                 case "SUBTASK": {
-                    super.addSubTaskWithId(new SubTask(counter, taskSource[2], taskSource[4], status, Integer.parseInt(taskSource[5])));
+                    super.addSubTaskWithId(new SubTask(counter, taskSource[2], taskSource[4], status, Integer.parseInt(taskSource[5]), time, duration));
                     break;
                 }
             }
@@ -72,7 +81,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void saveFile() {
         List<String> tasks = saveTasks();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            writer.write("id,type,name,status,description,epic");
+            writer.write("id,type,name,status,description,epic,start_time,duration");
             writer.newLine();
             for (String task : tasks) {
                 writer.write(task);

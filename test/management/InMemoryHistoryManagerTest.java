@@ -9,11 +9,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
-
     Managers managers = new Managers();
 
     @Test
-    void allTasksShouldBeAddedToHistory(){
+    void allTasksShouldBeAddedToHistory() {
         Task task1 = new Task(0, "aaa", "bbb", TaskStatus.NEW);
         Task task2 = new Task(1, "sss", "ddd", TaskStatus.NEW);
         HistoryManager historyManager = Managers.getDefaultHistory();
@@ -31,7 +30,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void equalTaskShouldBeDeleted(){
+    void equalTaskShouldBeDeleted() {
         Task task1 = new Task(0, "aaa", "bbb", TaskStatus.NEW);
         Task task2 = new Task(0, "sss", "ddd", TaskStatus.NEW);
         HistoryManager historyManager = Managers.getDefaultHistory();
@@ -46,7 +45,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void taskShouldBeRemoved(){
+    void taskShouldBeRemoved() {
         Task task1 = new Task(0, "aaa", "bbb", TaskStatus.NEW);
         Task task2 = new Task(1, "sss", "ddd", TaskStatus.NEW);
         HistoryManager historyManager = Managers.getDefaultHistory();
@@ -60,4 +59,5 @@ class InMemoryHistoryManagerTest {
         assertEquals(task2.getDescription(), tasks.get(0).getDescription(), "Описания не совпадают!");
         assertEquals(task2.getStatus(), tasks.get(0).getStatus(), "Статусы не совпадают!");
     }
+
 }

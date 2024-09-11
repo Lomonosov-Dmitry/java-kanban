@@ -7,12 +7,11 @@ import model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
+class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager>{
 
     Managers managers = new Managers();
     Task task = new Task("aaa", "bbb", TaskStatus.NEW);
@@ -31,9 +30,9 @@ class InMemoryTaskManagerTest {
         managers.getDefault().addEpic(epic);
         managers.getDefault().addSubTask(subTask);
 
-        assertEquals(task, managers.getDefault().getTaskById(1), "Задача не найдена!");
-        assertEquals(epic, managers.getDefault().getEpicById(2), "Эпик не найден!");
-        assertEquals(subTask, managers.getDefault().getSubTaskById(3), "Подзадача не найдена!");
+        assertEquals(task, managers.getDefault().getTaskById(1).get(), "Задача не найдена!");
+        assertEquals(epic, managers.getDefault().getEpicById(2).get(), "Эпик не найден!");
+        assertEquals(subTask, managers.getDefault().getSubTaskById(3).get(), "Подзадача не найдена!");
     }
 
     @Test
@@ -47,5 +46,15 @@ class InMemoryTaskManagerTest {
         assertEquals(task.getName(), tasks.get(0).getName(), "Имена не совпадают!");
         assertEquals(task.getDescription(), tasks.get(0).getDescription(), "Описания не совпадают!");
         assertEquals(task.getStatus(), tasks.get(0).getStatus(), "Статусы не совпадают!");
+    }
+
+    @Test
+    void epicStatusCountingTest() {
+        super.epicStatusCountingTest(managers.getDefault());
+    }
+
+    @Test
+    void timeManagementTest() {
+        super.timeManagementTest(managers.getDefault());
     }
 }
