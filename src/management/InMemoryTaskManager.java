@@ -30,6 +30,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public int getCounter() {
+        return counter;
+    }
+    @Override
     public void addTask(Task newTask) {
         if (timeValidator(newTask)) {
             newTask.setId(counter);

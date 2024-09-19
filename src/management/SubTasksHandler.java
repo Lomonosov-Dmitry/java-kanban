@@ -49,7 +49,7 @@ public class SubTasksHandler extends BaseHttpHandler implements HttpHandler {
                         SubTask newSubTask = json.fromJson(new JsonReader(new InputStreamReader(exchange.getRequestBody())), SubTask.class);
                         if (newSubTask.getStartTime() == null || manager.timeValidator(newSubTask)) {
                             manager.updateSubTask(newSubTask);
-                            super.sendOk(exchange);
+                            super.sendOk(exchange, "");
                         } else
                             super.sendHasInteractions(exchange, "Уазанное время уже занято");
                     }
@@ -57,7 +57,7 @@ public class SubTasksHandler extends BaseHttpHandler implements HttpHandler {
                     SubTask newSubTask = json.fromJson(new JsonReader(new InputStreamReader(exchange.getRequestBody())), SubTask.class);
                     if (newSubTask.getStartTime() == null || manager.timeValidator(newSubTask)) {
                         manager.addSubTask(newSubTask);
-                        super.sendOk(exchange);
+                        super.sendOk(exchange, String.valueOf((Managers.getDefault().getCounter() - 1)));
                     } else
                         super.sendHasInteractions(exchange, "Уазанное время уже занято");
                 }

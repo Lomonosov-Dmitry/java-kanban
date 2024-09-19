@@ -19,9 +19,11 @@ public class BaseHttpHandler {
         }
     }
 
-    protected void sendOk(HttpExchange exchange) {
+    protected void sendOk(HttpExchange exchange, String text) {
         try {
+            byte[] response = text.getBytes(StandardCharsets.UTF_8);
             exchange.sendResponseHeaders(201, 0);
+            exchange.getResponseBody().write(response);
             exchange.close();
         } catch (IOException e) {
             Managers.getDefault().handleIOException("Ошибка отправки статуса 201: " + e.getMessage());

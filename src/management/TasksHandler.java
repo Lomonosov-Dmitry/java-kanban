@@ -49,7 +49,7 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
                         Task newTask = json.fromJson(new JsonReader(new InputStreamReader(exchange.getRequestBody())), Task.class);
                         if (newTask.getStartTime() == null || manager.timeValidator(newTask)) {
                             manager.updateTask(newTask);
-                            super.sendOk(exchange);
+                            super.sendOk(exchange, "");
                         } else
                             super.sendHasInteractions(exchange, "Уазанное время уже занято");
                     }
@@ -57,7 +57,7 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
                     Task newTask = json.fromJson(new JsonReader(new InputStreamReader(exchange.getRequestBody())), Task.class);
                     if (newTask.getStartTime() == null || manager.timeValidator(newTask)) {
                         manager.addTask(newTask);
-                        super.sendOk(exchange);
+                        super.sendOk(exchange, String.valueOf((Managers.getDefault().getCounter() - 1)));
                     } else
                         super.sendHasInteractions(exchange, "Уазанное время уже занято");
                 }

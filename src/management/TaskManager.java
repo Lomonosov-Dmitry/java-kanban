@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskManager {
+    int getCounter();
+
     void addTask(Task newTask);
 
     void addEpic(Epic newEpic);

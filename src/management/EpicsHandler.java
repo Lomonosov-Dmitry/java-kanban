@@ -50,9 +50,21 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
                 return;
             }
             case "POST": {
-                Epic newEpic = json.fromJson(new JsonReader(new InputStreamReader(exchange.getRequestBody())), Epic.class);
-                manager.addEpic(newEpic);
-                super.sendOk(exchange);
+                String[] path = exchange.getRequestURI().getPath().split("/");
+                if (path.length > 3) {
+                    if (Managers.getDefault().getEpicById(Integer.parseInt(path[2])).isEmpty()) {
+                        super.sendNotFound(exchange, "Эпик " + path[2] + " не найден.");
+                    } else {
+                        Epic newEpic = json.fromJson(new JsonReader(new InputStreamReader(exchange.getRequestBody())), Epic.class);
+                        Epic oldEpic = Managers.getDefault().getEpicById(Integer.parseInt(path[2])).get();
+                        oldEpic.setName(newEpic.getName());
+                        oldEpic.setDescription(newEpic.getDescription());
+                    }
+                } else {
+                    Epic newEpic = json.fromJson(new JsonReader(new InputStreamReader(exchange.getRequestBody())), Epic.class);
+                    manager.addEpic(newEpic);
+                    super.sendOk(exchange, String.valueOf((Managers.getDefault().getCounter() - 1)));
+                }
             }
             case "DELETE": {
                 String[] path = exchange.getRequestURI().getPath().split("/");
