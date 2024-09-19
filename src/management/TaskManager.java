@@ -51,4 +51,10 @@ public interface TaskManager {
     void updateSubTask(SubTask newSubTask);
 
     void updateEpicStatus(int epicId);
+
+    boolean timeValidator(Task task);
+
+    List<Task> getPrioritizedTasks();
+
+    void handleIOException(String text);
 }

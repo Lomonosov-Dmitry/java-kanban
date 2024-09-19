@@ -157,10 +157,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTask(int taskId) {
-        if (getTaskById(taskId).isPresent())
-            timesortedTasks.remove(getTaskById(taskId).get());
-        tasks.remove(taskId);
-        historyManager.remove(taskId);
+        if (tasks.containsKey(taskId)) {
+            if (tasks.get(taskId).getStartTime() != null)
+                timesortedTasks.remove(tasks.get(taskId));
+            tasks.remove(taskId);
+            historyManager.remove(taskId);
+        }
     }
 
     @Override
@@ -175,8 +177,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeSubTask(int subTaskId) {
         if (subTasks.containsKey(subTaskId)) {
-            if (getSubTaskById(subTaskId).isPresent())
-                timesortedTasks.remove(getSubTaskById(subTaskId).get());
+            if (subTasks.get(subTaskId).getStartTime() != null)
+                timesortedTasks.remove(subTasks.get(subTaskId));
             int epicId = subTasks.get(subTaskId).getEpicId();
             epics.get(epicId).removeSubTask(subTaskId);
             subTasks.remove(subTaskId);
@@ -297,12 +299,17 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    protected boolean timeValidator(Task newTask) {
-        long count = getPrioritizedTasks().stream()
-                .filter(task -> task.getEndTime().isAfter(newTask.getStartTime()))
-                .filter(task -> task.getStartTime().isBefore(newTask.getEndTime()))
-                .count();
-        return count <= 0;
+    @Override
+    public boolean timeValidator(Task newTask) {
+        if (newTask.getStartTime() != null) {
+            long count = getPrioritizedTasks().stream()
+                    .filter(task -> task.getId() != newTask.getId())
+                    .filter(task -> task.getEndTime().isAfter(newTask.getStartTime()))
+                    .filter(task -> task.getStartTime().isBefore(newTask.getEndTime()))
+                    .count();
+            return count <= 0;
+        } else
+            return true;
     }
 
     private void clearHistory(String taskType) {
@@ -324,6 +331,11 @@ public class InMemoryTaskManager implements TaskManager {
                 }
             }
         }
+    }
+
+    @Override
+    public void handleIOException(String text) {
+        System.out.println(text);
     }
 
 }

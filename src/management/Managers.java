@@ -2,15 +2,15 @@ package management;
 
 public class Managers {
 
-    private TaskManager taskManager;
-    private static HistoryManager historyManager = null;
+    private static TaskManager taskManager;
+    private static HistoryManager historyManager;
 
     public Managers() {
-        this.historyManager = new InMemoryHistoryManager();
-        this.taskManager = new InMemoryTaskManager(historyManager);
+        historyManager = new InMemoryHistoryManager();
+        taskManager = new InMemoryTaskManager(historyManager);
     }
 
-    public TaskManager getDefault() {
+    public static TaskManager getDefault() {
         return taskManager;
     }
 
