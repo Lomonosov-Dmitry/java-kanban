@@ -33,6 +33,7 @@ public class InMemoryTaskManager implements TaskManager {
     public int getCounter() {
         return counter;
     }
+
     @Override
     public void addTask(Task newTask) {
         if (timeValidator(newTask)) {
