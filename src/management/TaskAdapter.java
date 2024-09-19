@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 
 public class TaskAdapter extends TypeAdapter<Task> {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy; HH:mm");
+
     @Override
     public void write(JsonWriter jsonWriter, Task task) {
         try {
