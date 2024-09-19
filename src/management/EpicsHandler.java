@@ -40,8 +40,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
                         String result = json.toJson(epic);
                         super.sendText(exchange, result);
                     }
-                }
-                else {
+                } else {
                     List<Epic> epics = manager.getAllEpics();
                     String result = "";
                     if (!epics.isEmpty())
