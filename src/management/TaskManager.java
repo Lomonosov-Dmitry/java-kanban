@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskManager {
+    int getCounter();
+
     void addTask(Task newTask);
 
     void addEpic(Epic newEpic);
@@ -51,4 +53,10 @@ public interface TaskManager {
     void updateSubTask(SubTask newSubTask);
 
     void updateEpicStatus(int epicId);
+
+    boolean timeValidator(Task task);
+
+    List<Task> getPrioritizedTasks();
+
+    void handleIOException(String text);
 }
